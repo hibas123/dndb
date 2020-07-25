@@ -26,38 +26,43 @@ class Datastore<T = any> {
 
     // Find a document
 
-    async find (query: IQuery<T>, projection: any = {}, cb?: (x: T[]) => void) {
-        if (cb && typeof cb == 'function') return cb(await _find(this.filename, query, projection));
-        return _find(this.filename, query, projection)
+    async find (query: IQuery<T>, projection: any = {}, cb?: (x: T[]) => void): Promise<T[]> {
+        const res = await _find(this.filename, query, projection);
+        if (cb && typeof cb == 'function') cb(res);
+        return res;
     }
 
     // Find first matching document
 
-    async findOne(query: IQuery<T>, projection: any = {}, cb?: (x: T) => void) {
+    async findOne(query: IQuery<T>, projection: any = {}, cb?: (x: T) => void): Promise<T | null> {
         projection = projection || {};
-        if (cb && typeof cb == 'function') return cb(await _findOne(this.filename, query, projection));
-        return _findOne(this.filename, query, projection)
+        const res = await _findOne(this.filename, query, projection);
+        if (cb && typeof cb == 'function')  cb(res);
+        return res;
     }
 
     // Inserts a document
 
-    async insert (data: T, cb?: (x: any) => void) {
-        if (cb && typeof cb == 'function') return cb(await _insert(this.filename, data));
-        return _insert(this.filename, data)
+    async insert (data: T, cb?: (x: any) => void): Promise<void> {
+        const res = await _insert(this.filename, data)
+        if (cb && typeof cb == 'function') cb(res);
+        return res;
     }
 
     // Updates matching documents
 
-    async update (query: IQuery<T>, operators: any, projection: any = {}, cb?: (x: any) => void) {
-        if (cb && typeof cb == "function") return cb(await _update(this.filename, query, operators, projection));
-        return _update(this.filename, query, operators, projection)
+    async update (query: IQuery<T>, operators: any, projection: any = {}, cb?: (x: any) => void): Promise<any> {
+        const res = await _update(this.filename, query, operators, projection)
+        if (cb && typeof cb == "function") cb(res);
+        return res;
     }
 
     // Removes matching document
 
-    async remove(query: IQuery<T>, cb?: (x: any) => void) {
-        if (cb && typeof cb == "function") return cb(await _remove(this.filename, query));
-        return _remove(this.filename, query)
+    async remove(query: IQuery<T>, cb?: (x: any) => void): Promise<any> {
+        const res = await _remove(this.filename, query)
+        if (cb && typeof cb == "function") cb(res);
+        return res;
     }
 
 } 
